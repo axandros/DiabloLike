@@ -1,4 +1,4 @@
-# DiabloLike
+ DiabloLike
 A Diablo-like Map generator.  A learning project in procedural generation and level design.
 
 # Technologies
@@ -16,16 +16,16 @@ UGenericTile is a custom UStruct structure that has booleans tracking exits in t
 These custom c++ structs are integrated into the engine's API so they can be exposed to Blueprints.
 
 UGenericDungeon is an unused c++ class to act as a larger container for managing the tiles.  Unfortunately, due to the way Unreal Engine 4 handles UStructs, my pointer and reference based designs would crash the engine.
-In desperation, I created the `<Dungeon>` Blueprint to do the same thing.
+In desperation, I created the `Dungeon` Blueprint to do the same thing.
 
 ### Level Generation
-The `<DungeonRenderer>` Blueprint was originally intended just to stream any given dungeon to the world using the provided tileset, but has, for now, also served as the level generator.  I use the *Spelunky* algorithm, starting from the western edge of a 5x5 grid of tiles and randomly moving north, south, or east until the eastern edge is hit.  The last tile is marked as the exit tile.
+The `DungeonRenderer` Blueprint was originally intended just to stream any given dungeon to the world using the provided tileset, but has, for now, also served as the level generator.  I use the *Spelunky* algorithm, starting from the western edge of a 5x5 grid of tiles and randomly moving north, south, or east until the eastern edge is hit.  The last tile is marked as the exit tile.
 
 The "*renderer*" then takes the completed dungeon and streams a level for each tile into the appropriate position in the world.  The main world contains all of the global lighting and information and the navigation mesh, wich is rebuilt dynamically to accomodate the new levels.  The renderer currently has several arrays for levels, one for each possible configuration of exits.  Any number of levels can be added to these arrays.
 
 ## Potential Improvements
 * Seperate dungeon generation algorithm from the dungeon renderer.
-* Create a `<tileset>` class/struct to hold the level arrays for different settings, then modify the renderer to read from this.
+* Create a `tileset` class/struct to hold the level arrays for different settings, then modify the renderer to read from this.
 * Fix the C++ code that crashes and convert the Dungeon blueprint to C++.
 
 ## Sources
