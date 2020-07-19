@@ -72,3 +72,7 @@ Plugins/*/Intermediate/*
 
 # Cache files for the editor to use
 DerivedDataCache/*
+
+# Project Files I can't destribute.
+Content/Polygon/
+Content/WaterPlane/
