@@ -44,47 +44,15 @@ public:
 	// operator= already declared?  In GENERATED_BODY?
 	//UGenericDungeon& operator=(const UGenericDungeon& other);
 
-	FGenericTile* operator[](FVector2DInt index);
-	//const FGenericTile& operator[](FVector2D index);
-	//FGenericTile& operator[](int LengthIndex);
-	//const FGenericTile& operator[](int LengthIndex);
-
-	bool IsOutOfBounds(int X, int Y);
-	bool IsOutOfBounds(FVector2DInt tileIndex);
-
-	bool SetStartTile(const FVector2DInt& tileIndex);
-	bool SetStartTile(int X, int Y);
-	bool SetGoalTile(const FVector2DInt& tileIndex);
-	bool SetGoalTile(int X, int Y);
-	bool SetDungeonDimensions(int width, int height);
-	bool SetDungeonDimensions(int widthAndHeight);
-
-	FVector2DInt GetStartTile();
-	FVector2DInt GetGoalTile();
-
-	int GetDungeonWidth();
-	int GetDungeonHeight();
-
-	TArray<FVector2DInt> GetAdjacentTileIndices(int x, int y);
-	TArray<FVector2DInt> GetAdjacentTileIndices(const FVector2DInt& originIndex);
-
-	TArray<FGenericTile*> GetAdjacentTiles(const FVector2DInt& originIndex);
-	TArray<FGenericTile*> GetAdjacentTiles(int x, int y);
+	UFUNCTION(BlueprintCallable)
+		FGenericTile GetTile(int x, int y);
 
 	UFUNCTION(BlueprintCallable)
-		FGenericTile GetTileReference(int x, int y);
-	
-	//UFUNCTION(BlueprintCallable)
-	FGenericTile* GetTile(int x, int y);
-
-	FGenericTile* GetTile(FVector2DInt coordinates);
+		bool SetTile(int x, int y, bool North, bool South, bool East, bool West);
 
 	UFUNCTION(BlueprintCallable)
-	bool SetTile(int x, int y, bool North, bool South, bool East, bool West);
+		TArray<FGenericTile> GetAllTiles();
 
-	//UFUNCTION(BlueprintCallable)
-	TArray<FGenericTile*> GetAllTiles();
-	
 	UFUNCTION(BlueprintPure)
 		void ConvertIntToCoordinates(int i, int& x, int& y);
 
@@ -96,7 +64,7 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 		bool GetTileArray(TArray<FGenericTile>& OutArray);
-	
+
 	UFUNCTION(BlueprintPure)
 		int GetWidth();
 	UFUNCTION(BlueprintPure)
@@ -105,10 +73,39 @@ public:
 	UFUNCTION(BlueprintPure)
 		int GetNumberOfTiles();
 
+	const FGenericTile operator[](FVector2DInt index);
+	const FGenericTile operator[](int index);
+
+	bool IsOutOfBounds(int X, int Y);
+	bool IsOutOfBounds(FVector2DInt tileIndex);
+
+	bool SetStartTile(const FVector2DInt& tileIndex);
+	bool SetStartTile(int X, int Y);
+	bool SetGoalTile(const FVector2DInt& tileIndex);
+	bool SetGoalTile(int X, int Y);
+	bool SetDungeonDimensions(int width, int height);
+	bool SetDungeonDimensions(int widthAndHeight);
+
+	void SetTile(int x, int y, FGenericTile tile);
+
+	FVector2DInt GetStartTile();
+	FVector2DInt GetGoalTile();
+
+	int GetDungeonWidth();
+	int GetDungeonHeight();
+
+	TArray<FVector2DInt> GetAdjacentTileIndices(int x, int y);
+	TArray<FVector2DInt> GetAdjacentTileIndices(const FVector2DInt& originIndex);
+
+	TArray<FGenericTile> GetAdjacentTiles(const FVector2DInt& originIndex);
+	TArray<FGenericTile> GetAdjacentTiles(int x, int y);
+
+	
+
 	void Initialize();
 	
 protected:
-	TArray<FGenericTile*> _dungeonArray;
+	TArray<FGenericTile> _dungeonArray;
 
 	UPROPERTY(BlueprintReadOnly, VisibleAnywhere)
 		int _dungeonWidth;
