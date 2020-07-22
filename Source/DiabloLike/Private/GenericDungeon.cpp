@@ -176,20 +176,12 @@ TArray<FVector2DInt> UGenericDungeon::GetAdjacentTileIndices(int x, int y)
 	return ret;
 }
 
-TArray<FVector2DInt> UGenericDungeon::GetAdjacentTileIndices(const FVector2DInt& originIndex)
+// TODO: Once GetAdjacentTileIndices is sorted out, fix this function to incorporate it.
+TArray<FGenericTile> UGenericDungeon::GetAdjacentTiles(int x, int y)
 {
-	return GetAdjacentTileIndices(originIndex.X, originIndex.Y);
-}
-
-TArray<FGenericTile*> UGenericDungeon::GetAdjacentTiles(const FVector2DInt& originIndex)
-{
-	return GetAdjacentTiles(originIndex.X, originIndex.Y);
-}
-
-TArray<FGenericTile*> UGenericDungeon::GetAdjacentTiles(int x, int y)
-{
-	TArray<FVector2DInt> adjacentIndices = GetAdjacentTileIndices(x, y);
-	TArray<FGenericTile*> ret = TArray<FGenericTile*>();
+	int adjacentIndices[2];
+	GetAdjacentTileIndices(x, y, adjacentIndices[0], adjacentIndices[1]);
+	TArray<FGenericTile> ret = TArray<FGenericTile>();
 	ret.SetNum(4);
 	for (int i = 0; i < adjacentIndices.Num(); i++) {
 		if (!IsOutOfBounds(adjacentIndices[i])) {
@@ -202,15 +194,9 @@ TArray<FGenericTile*> UGenericDungeon::GetAdjacentTiles(int x, int y)
 	return ret;
 }
 
-FGenericTile UGenericDungeon::GetTileReference(int x, int y)
+FGenericTile UGenericDungeon::GetTile(int x, int y) const
 {
-	FGenericTile ret = *GetTile(x, y);
-	return ret;
-}
-
-FGenericTile* UGenericDungeon::GetTile(int x, int y)
-{
-	FGenericTile* ret = nullptr;
+	FGenericTile ret;
 	if (!IsOutOfBounds(x, y)) {
 		int index = ConvertCoordToInt(x, y);
 		UE_LOG(Dungeon, Warning, TEXT("Getting tile %i, %i | index: %i"), x, y, index)
@@ -223,36 +209,19 @@ FGenericTile* UGenericDungeon::GetTile(int x, int y)
 	return ret;
 }
 
-FGenericTile* UGenericDungeon::GetTile(FVector2DInt coordinates)
+bool UGenericDungeon::SetTile(int x, int y, FGenericTile tile)
 {
-	return GetTile(coordinates.X, coordinates.Y);
+	bool ret = false;
+	if (!IsOutOfBounds(x, y)) {
+		_dungeonArray[ConvertCoordToInt(x, y)] = tile;
+		ret = true;
+	}
+
+	return ret;;
 }
 
-bool UGenericDungeon::SetTile(int x, int y, bool North, bool South, bool East, bool West)
+TArray<FGenericTile> UGenericDungeon::GetTileArray() const
 {
-	UE_LOG(Dungeon, Warning, TEXT("@ Setting %i, %i "), x, y)
-	FGenericTile* tile = GetTile(x, y);
-	UE_LOG(Dungeon, Warning, TEXT("@ Got Tile"))
-	if (tile != nullptr) {
-		tile->Void = true;
-		tile->North = North;
-		tile->South = South;
-		tile->East = East;
-		tile->West = West;
-		//tile = new FGenericTile();
-		UE_LOG(Dungeon, Warning, TEXT("@ Tile is null?"))
-		//	if (tile == nullptr) {
-		//		UE_LOG(Dungeon, Error, TEXT("@ Tile was NOT created successfully"))
-		//	}
-		}
-
-	UE_LOG(Dungeon, Warning, TEXT("@ Tile added."))
-	return true;
-}
-
-TArray<FGenericTile*> UGenericDungeon::GetAllTiles()
-{
-	UE_LOG(Dungeon, Warning, TEXT("Getting _dungeonArray"))
 	return _dungeonArray;
 }
 
