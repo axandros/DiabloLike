@@ -75,15 +75,15 @@ public:
 		bool SetTile(int x, int y, FGenericTile tile);
 
 	UFUNCTION(BlueprintCallable)
-		TArray<FGenericTile> GetTileArray();
+		TArray<FGenericTile> GetTileArray() const;
 
 	UFUNCTION(BlueprintCallable)
 		bool SetDungeonDimensions(int width, int height);
 	bool SetDungeonDimensions(int widthAndHeight);
 
-	const FGenericTile operator[](int index);
+	//const FGenericTile operator[](int index);
 
-	void GetAdjacentTileIndices(int x, int y, int& Xout, int& Yout);
+	TArray<FVector2D> GetAdjacentTileIndices(int x, int y) const;
 	TArray<FGenericTile> GetAdjacentTiles(int x, int y);
 
 	void Initialize();
