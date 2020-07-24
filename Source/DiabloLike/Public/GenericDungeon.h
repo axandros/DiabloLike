@@ -44,7 +44,7 @@ public:
 	//UGenericDungeon& operator=(const UGenericDungeon& other);
 
 	UFUNCTION(BlueprintPure)
-		FGenericTile GetTile(int x, int y) const;
+		FGenericTile GetTile(int x, int y, bool& isOutOfBounds) const;
 
 	UFUNCTION(BlueprintPure)
 		void GetStartTileCoord(int& x, int& y) const;

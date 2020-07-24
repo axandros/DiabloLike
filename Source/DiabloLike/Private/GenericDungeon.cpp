@@ -132,16 +132,18 @@ TArray<FGenericTile> UGenericDungeon::GetAdjacentTiles(int x, int y)
 	return ret;
 }
 
-FGenericTile UGenericDungeon::GetTile(int x, int y) const
+FGenericTile UGenericDungeon::GetTile(int x, int y, bool& isOutOfBounds) const
 {
 	FGenericTile ret;
 	if (!IsOutOfBounds(x, y)) {
 		int index = ConvertCoordToInt(x, y);
 		UE_LOG(Dungeon, Warning, TEXT("Getting tile %i, %i | index: %i"), x, y, index)
 		ret = _dungeonArray[index];
+		isOutOfBounds = false;
 	}
 	else {
 		UE_LOG(Dungeon, Error, TEXT("!! %i, %i is out of bounds!"), x, y)
+			isOutOfBounds = true;
 	}
 	UE_LOG(Dungeon, Warning, TEXT("Returning Tile"))
 	return ret;
