@@ -53,7 +53,6 @@ public:
 		bool SetGoalTile(int X, int Y);
 	UFUNCTION(BlueprintCallable)
 		bool SetDungeonDimensions(int width, int height);
-		bool SetDungeonDimensions(int widthAndHeight);
 
 	UFUNCTION(BlueprintCallable)
 		bool SetTile(int x, int y, FGenericTile tile);
