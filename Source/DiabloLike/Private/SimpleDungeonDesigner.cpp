@@ -22,6 +22,7 @@ void USimpleDungeonDesigner::BeginPlay()
 	Super::BeginPlay();
 
 	// ...
+	/*
 	FString compileDate = __DATE__;
 	FString compileTime = __TIME__;
 	UE_LOG(LogTemp, Warning, TEXT("Built %s %s"), *compileDate, *compileTime)
@@ -31,6 +32,7 @@ void USimpleDungeonDesigner::BeginPlay()
 		}
 	MakeDungeon();
 	UE_LOG(LogTemp, Warning, TEXT("Make Dungeon done."))
+	*/
 }
 
 
@@ -43,14 +45,14 @@ void USimpleDungeonDesigner::TickComponent(float DeltaTime, ELevelTick TickType,
 }
 
 void USimpleDungeonDesigner::MakeDungeon() {
-	
+	/*
 	_dungeon->Initialize();
 	_dungeon->SetDungeonDimensions(5);
 	
 	UE_LOG(LogTemp, Warning, TEXT("Dimensions Set"))
 	_dungeon->SetStartTile(0, 0);
 	_dungeon->SetGoalTile(0, 0);
-	
+	*/
 	/*
 	_dungeon->SetTile(0, 0, false, false, true, false);
 	_dungeon->SetTile(0, 1, true, false, false, true);

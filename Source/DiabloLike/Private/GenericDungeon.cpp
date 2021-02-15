@@ -8,9 +8,9 @@ DEFINE_LOG_CATEGORY(Dungeon);
 
 UGenericDungeon::UGenericDungeon() {
 	
-	_dungeonArray = TArray<FGenericTile*>();
-	_dungeonArray.Empty();
-	_dungeonArray.Add(new FGenericTile);
+	//_dungeonArray = TArray<FGenericTile*>();
+	//_dungeonArray.Empty();
+	//_dungeonArray.Add(new FGenericTile);
 }
 
 /*
@@ -26,32 +26,41 @@ UGenericDungeon& UGenericDungeon::operator=(const UGenericDungeon& other)
 	return *this;
 }
 */
-
-FGenericTile* UGenericDungeon::operator[](FVector2DInt index)
+/*
+const FGenericTile* UGenericDungeon::operator[](FIntVector index)
 {
 	FGenericTile* ret = nullptr;
 	if (!IsOutOfBounds(index)) {
-		ret = _dungeonArray[ConvertCoordToInt(index.X, index.Y)];
-	}
-	return ret;
-}
-/*
-FGenericTile& UGenericDungeon::operator[](int LengthIndex)
-{
-	FGenericTile ret = FGenericTile();
-	if (!IsOutOfBounds(LengthIndex)) {
-		ret = _dungeonArray[LengthIndex];
+		//ret = _dungeonArray[ConvertCoordToInt(index.X, index.Y)];
 	}
 	return ret;
 }
 */
 
-bool UGenericDungeon::IsOutOfBounds(FVector2DInt tileIndex)
+const FGenericTile* UGenericDungeon::operator[](int LengthIndex)
+{
+	FGenericTile* ret = nullptr;
+	//FGenericTile ret = FGenericTile();
+	if (!IsOutOfBounds(LengthIndex)) {
+		//ret = _dungeonArray[LengthIndex];
+	}
+	return ret;
+}
+
+
+const bool UGenericDungeon::IsOutOfBounds(FIntVector& tileIndex)
 {
 	return IsOutOfBounds(int(tileIndex.X), int(tileIndex.Y));
 }
 
-bool UGenericDungeon::IsOutOfBounds(int X, int Y)
+const bool UGenericDungeon::IsOutOfBounds(int index)
+{
+	bool ret = false;
+	if (index >= 0 && index < _dungeonArray.Num()){ ret = true;}
+	return ret;
+}
+
+const bool UGenericDungeon::IsOutOfBounds(int X, int Y)
 {
 	bool Xzed = X >= 0;
 	bool Yzed = Y >= 0;
@@ -61,7 +70,7 @@ bool UGenericDungeon::IsOutOfBounds(int X, int Y)
 	return !(Xzed && Yzed && XTop && YTop && ICheck);
 }
 
-bool UGenericDungeon::SetStartTile(const FVector2DInt& tileIndex)
+bool UGenericDungeon::SetStartTile(const FIntVector& tileIndex)
 {
 	_startTile = tileIndex;
 	return true;
@@ -70,12 +79,12 @@ bool UGenericDungeon::SetStartTile(const FVector2DInt& tileIndex)
 bool UGenericDungeon::SetStartTile(int X, int Y)
 {
 	UE_LOG(Dungeon, Warning, TEXT("Setting Dungeon Start Tile: %i, %i"), X, Y)
-	_startTile = FVector2DInt(X, Y);
+	_startTile = FIntVector(X, Y, 0);
 	UE_LOG(Dungeon, Warning, TEXT("Dungeon Start Tile Set: %i, %i"), _startTile.X, _startTile.Y)
 	return true;
 }
 
-bool UGenericDungeon::SetGoalTile(const FVector2DInt& tileIndex)
+bool UGenericDungeon::SetGoalTile(const FIntVector& tileIndex)
 {
 	UE_LOG(Dungeon, Warning, TEXT("Setting Dungeon Goal Tile: %i, %i"), tileIndex.X, tileIndex.Y)
 	_goalTile = tileIndex;
@@ -85,13 +94,16 @@ bool UGenericDungeon::SetGoalTile(const FVector2DInt& tileIndex)
 
 bool UGenericDungeon::SetGoalTile(int X, int Y)
 {
-	return SetGoalTile(FVector2DInt(X, Y));
+	_goalTile = FIntVector(X, Y, 0);
+	return true;
 }
 
 bool UGenericDungeon::SetDungeonDimensions(int width, int height)
 {
-	UE_LOG(Dungeon, Warning, TEXT("Setting dungeon dimensions: %i, %i"), width, height)
 	bool ret = false;
+	/*
+	UE_LOG(Dungeon, Warning, TEXT("Setting dungeon dimensions: %i, %i"), width, height)
+	
 	FString retString = "false";
 	if (_dungeonArray.Num() == 0) {
 		UE_LOG(Dungeon, Warning, TEXT("Setting is allowed."))
@@ -108,13 +120,15 @@ bool UGenericDungeon::SetDungeonDimensions(int width, int height)
 			UE_LOG(Dungeon, Warning, TEXT("Adding item %i"), i)
 			_dungeonArray.Add(new FGenericTile());
 		}
-		*/
+		*//*
 	}
 	else {
 		UE_LOG(Dungeon, Warning, TEXT("Setting not allowed.  Current Size = %i"),_dungeonArray.Num())
 	}
 	UE_LOG(Dungeon, Warning, TEXT("Returning from dimension set function %s"), *retString)
+	*/
 	return ret;
+	
 }
 
 bool UGenericDungeon::SetDungeonDimensions(int widthAndHeight)
@@ -122,14 +136,16 @@ bool UGenericDungeon::SetDungeonDimensions(int widthAndHeight)
 	return SetDungeonDimensions(widthAndHeight, widthAndHeight);
 }
 
-FVector2DInt UGenericDungeon::GetStartTile()
+void UGenericDungeon::GetStartTile(int& x, int& y)
 {
-	return _startTile;
+	x = _startTile.X;
+	y = _startTile.Y;
 }
 
-FVector2DInt UGenericDungeon::GetGoalTile()
+void UGenericDungeon::GetGoalTile(int& x, int& y)
 {
-	return _goalTile;
+	x = _goalTile.X;
+	y = _goalTile.Y;
 }
 
 int UGenericDungeon::GetDungeonWidth()
@@ -142,12 +158,12 @@ int UGenericDungeon::GetDungeonHeight()
 	return _dungeonHeight;
 }
 
-TArray<FVector2DInt> UGenericDungeon::GetAdjacentTileIndices(int x, int y)
+void UGenericDungeon::GetAdjacentTileIndices(TArray<FIntVector>& AdjacentTileIndices, int x, int y)
 {
 	UE_LOG(DungeonGen, Log, TEXT("Getting Adjacent Tiles for %i, %i"), x, y)
-		TArray< FVector2DInt> ret;
+		TArray< FIntVector> ret;
 	for (int i = 0; i < 4; i++) {
-		ret.Add({ -1,-1 });
+		ret.Add(FIntVector( -1,-1, 0 ));
 	}
 	// North
 	if (y < _dungeonHeight - 1) {
@@ -173,23 +189,24 @@ TArray<FVector2DInt> UGenericDungeon::GetAdjacentTileIndices(int x, int y)
 		ret[2].Y = y + 1;
 		UE_LOG(Dungeon, Warning, TEXT("### %f, %f"), ret[2].X, ret[2].Y)
 	}
-	return ret;
 }
 
-TArray<FVector2DInt> UGenericDungeon::GetAdjacentTileIndices(const FVector2DInt& originIndex)
+void UGenericDungeon::GetAdjacentTileIndices(TArray<FIntVector>& AdjacentTileIndices, const FIntVector& originIndex)
 {
-	return GetAdjacentTileIndices(originIndex.X, originIndex.Y);
+	return GetAdjacentTileIndices(AdjacentTileIndices, originIndex.X, originIndex.Y);
 }
 
-TArray<FGenericTile*> UGenericDungeon::GetAdjacentTiles(const FVector2DInt& originIndex)
+void UGenericDungeon::GetAdjacentTiles(TArray<FGenericTile> AdjacentTiles, const FIntVector& originIndex)
 {
-	return GetAdjacentTiles(originIndex.X, originIndex.Y);
+	return GetAdjacentTiles(AdjacentTiles, originIndex.X, originIndex.Y);
 }
 
-TArray<FGenericTile*> UGenericDungeon::GetAdjacentTiles(int x, int y)
+void UGenericDungeon::GetAdjacentTiles(TArray<FGenericTile> AdjacentTiles, int x, int y)
 {
+	AdjacentTiles = TArray<FGenericTile>();
+	/*
 	TArray<FVector2DInt> adjacentIndices = GetAdjacentTileIndices(x, y);
-	TArray<FGenericTile*> ret = TArray<FGenericTile*>();
+	
 	ret.SetNum(4);
 	for (int i = 0; i < adjacentIndices.Num(); i++) {
 		if (!IsOutOfBounds(adjacentIndices[i])) {
@@ -199,61 +216,75 @@ TArray<FGenericTile*> UGenericDungeon::GetAdjacentTiles(int x, int y)
 			ret[i] = nullptr;
 		}
 	}
-	return ret;
+	*/
 }
 
+/*
 FGenericTile UGenericDungeon::GetTileReference(int x, int y)
 {
-	FGenericTile ret = *GetTile(x, y);
-	return ret;
+	//FGenericTile ret = *GetTile(x, y);
+	return FGenericTile();
 }
+*/
 
-FGenericTile* UGenericDungeon::GetTile(int x, int y)
+
+bool UGenericDungeon::GetTile(FGenericTile& tile, int x, int y)
 {
-	FGenericTile* ret = nullptr;
+	bool ret = true;
 	if (!IsOutOfBounds(x, y)) {
 		int index = ConvertCoordToInt(x, y);
 		UE_LOG(Dungeon, Warning, TEXT("Getting tile %i, %i | index: %i"), x, y, index)
-		ret = _dungeonArray[index];
+		//ret = _dungeonArray[index];
 	}
 	else {
 		UE_LOG(Dungeon, Error, TEXT("!! %i, %i is out of bounds!"), x, y)
+			ret = false;
 	}
-	UE_LOG(Dungeon, Warning, TEXT("Returning Tile"))
 	return ret;
 }
 
+
+/*
 FGenericTile* UGenericDungeon::GetTile(FVector2DInt coordinates)
 {
 	return GetTile(coordinates.X, coordinates.Y);
 }
+*/
 
 bool UGenericDungeon::SetTile(int x, int y, bool North, bool South, bool East, bool West)
 {
+	bool ret = false;
 	UE_LOG(Dungeon, Warning, TEXT("@ Setting %i, %i "), x, y)
-	FGenericTile* tile = GetTile(x, y);
-	UE_LOG(Dungeon, Warning, TEXT("@ Got Tile"))
-	if (tile != nullptr) {
-		tile->Void = true;
-		tile->North = North;
-		tile->South = South;
-		tile->East = East;
-		tile->West = West;
-		//tile = new FGenericTile();
-		UE_LOG(Dungeon, Warning, TEXT("@ Tile is null?"))
-		//	if (tile == nullptr) {
-		//		UE_LOG(Dungeon, Error, TEXT("@ Tile was NOT created successfully"))
-		//	}
-		}
+		FGenericTile tile; // = FGenericTile();
+	if(GetTile(tile, x, y)){
+		tile.Void = true;
+		tile.North = North;
+		tile.South = South;
+		tile.East = East;
+		tile.West = West;
+		ret = true;
+	}
 
 	UE_LOG(Dungeon, Warning, TEXT("@ Tile added."))
-	return true;
+	return ret;
+}
+bool UGenericDungeon::SetTile(int x, int y, FGenericTile tile)
+{
+	bool ret = false;
+	if (!IsOutOfBounds(x, y)) {
+		ret = true;
+		int c = ConvertCoordToInt(x, y);
+		_dungeonArray[c] = tile;
+	}
+
+	UE_LOG(Dungeon, Warning, TEXT("@ Tile added."))
+		return ret;
 }
 
-TArray<FGenericTile*> UGenericDungeon::GetAllTiles()
+void UGenericDungeon::GetAllTiles(TArray<FGenericTile> &TileList)
 {
 	UE_LOG(Dungeon, Warning, TEXT("Getting _dungeonArray"))
-	return _dungeonArray;
+		TileList = _dungeonArray;
 }
 
 void UGenericDungeon::ConvertIntToCoordinates(int i, int& x, int& y)
@@ -267,39 +298,9 @@ int UGenericDungeon::ConvertCoordToInt(int x, int y)
 	return y * _dungeonWidth + x;;
 }
 
-int UGenericDungeon::ConvertCoordToIntF(FVector2DInt index)
+int UGenericDungeon::ConvertCoordToIntF(FIntVector index)
 {
 	return index.Y * _dungeonWidth + index.X;
-}
-
-bool UGenericDungeon::GetTileArray(TArray<FGenericTile>& OutArray)
-{
-	
-	UE_LOG(Dungeon, Warning, TEXT("Entering GetTileArray"))
-	bool ret = false;
-	UE_LOG(Dungeon, Warning, TEXT("Getting Tile Array for Blueprints"))
-	OutArray = TArray<FGenericTile>();
-	/*
-	UE_LOG(Dungeon, Warning, TEXT("Getting Tile Array for Blueprints"))
-	for (int i = 0; i < _dungeonArray.Num(); i++) {
-		ret = true;
-		UE_LOG(Dungeon, Warning, TEXT("Adding array item %i"), i)
-			if (_dungeonArray[i] == nullptr) {
-				OutArray.Add(FGenericTile());
-			}
-			else {
-				try {
-					FGenericTile* item = _dungeonArray[i];
-					OutArray.Add(item->MakeCopy());
-				}
-				catch (int e) {
-					UE_LOG(Dungeon, Warning, TEXT("Caught Exception %i"), e)
-				}
-			}
-	}
-	UE_LOG(Dungeon, Warning, TEXT("Returning Array"))
-	*/
-	return ret;
 }
 
 int UGenericDungeon::GetWidth()

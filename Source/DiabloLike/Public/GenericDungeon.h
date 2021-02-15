@@ -43,27 +43,45 @@ public:
 	UGenericDungeon();
 	// operator= already declared?  In GENERATED_BODY?
 	//UGenericDungeon& operator=(const UGenericDungeon& other);
+	const FGenericTile* operator[](int index);
+
+		bool SetStartTile(const FIntVector& tileIndex);
+	UFUNCTION(BlueprintCallable)
+		bool SetStartTile(int X, int Y);
+		bool SetGoalTile(const FIntVector& tileIndex);
+	UFUNCTION(BlueprintCallable)
+		bool SetGoalTile(int X, int Y);
+	UFUNCTION(BlueprintCallable)
+		bool SetDungeonDimensions(int width, int height);
+		bool SetDungeonDimensions(int widthAndHeight);
 
 	UFUNCTION(BlueprintCallable)
-		FGenericTile GetTile(int x, int y);
+		bool SetTile(int x, int y, FGenericTile tile);
+	bool SetTile(int x, int y, bool North, bool South, bool East, bool West);
 
 	UFUNCTION(BlueprintCallable)
-		bool SetTile(int x, int y, bool North, bool South, bool East, bool West);
+		void GetAdjacentTileIndices(TArray<FIntVector>& AdjacentTileIndices, int x, int y);
+	void GetAdjacentTileIndices(TArray<FIntVector>& AdjacentTileIndices, const FIntVector& originIndex);
 
 	UFUNCTION(BlueprintCallable)
-		TArray<FGenericTile> GetAllTiles();
+		void GetAdjacentTiles(TArray<FGenericTile> AdjacentTiles, const FIntVector& originIndex);
+	void GetAdjacentTiles(TArray<FGenericTile> AdjacentTiles, int x, int y);
+
+	// Blueprint Pure
+	
+	/// Get the tile at X, Y
+	/// Returns true if in bounds, false if outof bounds.
+	UFUNCTION(BlueprintPure)
+		bool GetTile(FGenericTile& tile, int x, int y);
+
+	UFUNCTION(BlueprintPure)
+		void GetAllTiles(TArray<FGenericTile>& TileList);
 
 	UFUNCTION(BlueprintPure)
 		void ConvertIntToCoordinates(int i, int& x, int& y);
 
 	UFUNCTION(BlueprintPure)
 		int ConvertCoordToInt(int x, int y);
-
-	UFUNCTION(BlueprintPure)
-		int ConvertCoordToIntF(FVector2DInt index);
-
-	UFUNCTION(BlueprintCallable)
-		bool GetTileArray(TArray<FGenericTile>& OutArray);
 
 	UFUNCTION(BlueprintPure)
 		int GetWidth();
@@ -73,33 +91,25 @@ public:
 	UFUNCTION(BlueprintPure)
 		int GetNumberOfTiles();
 
-	const FGenericTile operator[](FVector2DInt index);
-	const FGenericTile operator[](int index);
+	UFUNCTION(BLUEPRINTPURE)
+		int ConvertCoordToIntF(FIntVector index);
 
-	bool IsOutOfBounds(int X, int Y);
-	bool IsOutOfBounds(FVector2DInt tileIndex);
+	UFUNCTION(BLUEPRINTPURE)
+		const bool IsOutOfBounds(int X, int Y);
+		const bool IsOutOfBounds(int index);
+		const bool IsOutOfBounds(FIntVector& index);
 
-	bool SetStartTile(const FVector2DInt& tileIndex);
-	bool SetStartTile(int X, int Y);
-	bool SetGoalTile(const FVector2DInt& tileIndex);
-	bool SetGoalTile(int X, int Y);
-	bool SetDungeonDimensions(int width, int height);
-	bool SetDungeonDimensions(int widthAndHeight);
+	UFUNCTION(BLUEPRINTPURE)
+		void GetStartTile(int& x, int& y);
+	UFUNCTION(BLUEPRINTPURE)
+		void GetGoalTile(int& x, int& y);
 
-	void SetTile(int x, int y, FGenericTile tile);
+	UFUNCTION(BLUEPRINTPURE)
+		int GetDungeonWidth();
+	UFUNCTION(BLUEPRINTPURE)
+		int GetDungeonHeight();
 
-	FVector2DInt GetStartTile();
-	FVector2DInt GetGoalTile();
-
-	int GetDungeonWidth();
-	int GetDungeonHeight();
-
-	TArray<FVector2DInt> GetAdjacentTileIndices(int x, int y);
-	TArray<FVector2DInt> GetAdjacentTileIndices(const FVector2DInt& originIndex);
-
-	TArray<FGenericTile> GetAdjacentTiles(const FVector2DInt& originIndex);
-	TArray<FGenericTile> GetAdjacentTiles(int x, int y);
-
+	
 	
 
 	void Initialize();
@@ -111,9 +121,9 @@ protected:
 		int _dungeonWidth;
 	UPROPERTY(BlueprintReadOnly, VisibleAnywhere)
 		int _dungeonHeight;
-
-	FVector2DInt _startTile;
-	FVector2DInt _goalTile;
+	
+	FIntVector _startTile;
+	FIntVector _goalTile;
 	
 private:
 };
