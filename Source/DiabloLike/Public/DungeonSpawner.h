@@ -5,7 +5,8 @@
 #include "CoreMinimal.h"
 #include "DungeonSpawner.generated.h"
 
-class FGenericDungeon;
+class UGenericDungeon;
+class UTilesetAsset;
 struct FGenericTile;
 
 /**
@@ -21,13 +22,22 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Spawner")
 	void SpawnDungeon(FVector StartLocation);
-	void SpawnDungeon(FVector StartLocation, FGenericDungeon* dungeon);
+	void SpawnDungeon(FVector StartLocation, UGenericDungeon* dungeon);
 
-	FGenericDungeon* GetDungeon();
-	void SetDungeon(FGenericDungeon* dungeon);
+	UFUNCTION(BlueprintCallable, Category = "Spawner")
+		UGenericDungeon* GetDungeon();
+	UFUNCTION(BlueprintCallable, Category = "Spawner")
+		void SetDungeon(UGenericDungeon* dungeon);
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+		UTilesetAsset* Tileset;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+		float TileSize;
 
 private:
-	FGenericDungeon* _dungeon;
+	UGenericDungeon* _dungeon;
+	FVector SpawnLocation;
 
 	void SpawnTile(FGenericTile tile, int gridX, int gridY);
 	TSoftObjectPtr<UWorld> RandomTile(TArray<TSoftObjectPtr<UWorld>> tilesetCollection);

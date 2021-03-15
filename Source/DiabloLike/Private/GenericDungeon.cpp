@@ -286,3 +286,12 @@ FGenericTile FGenericTile::MakeCopy()
 	ret.Void = Void;
 	return ret;
 }
+
+unsigned int FGenericTile::GetExitFlags()
+{
+	unsigned int ret = fNORTH & int(North)
+		| fEAST & int(East)
+		| fSOUTH & int (South)
+		| fWEST & int(West);
+	return ret;
+}

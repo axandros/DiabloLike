@@ -29,6 +29,13 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Exits")
 		bool Void = true;
 
+	static const unsigned int fNORTH = 0b01;
+	static const unsigned int fEAST = 0b010;
+	static const unsigned int fSOUTH = 0b0100;
+	static const unsigned int fWEST = 0b01000;
+
+	unsigned int GetExitFlags();
+
 	bool NoExits() { return !North && !South && !East && !West; }
 
 	FGenericTile MakeCopy();
