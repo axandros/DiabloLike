@@ -47,18 +47,44 @@ void UDungeonSpawner::SpawnTile(FGenericTile tile, int gridX, int gridY)
 	FVector worldPosition = FVector(gridX + TileSize, gridY + TileSize, 0);
 	worldPosition += SpawnLocation;
 	unsigned int flags = tile.GetExitFlags();
+	const int NORTH = FGenericTile::fNORTH;
+	const int EAST = FGenericTile::fEAST;
+	const int SOUTH = FGenericTile::fSOUTH;
+	const int WEST = FGenericTile::fWEST;
+
 	switch (flags) {
 		case 0 : // none
 			break;
-		case 0b01 : // North only
+		case NORTH : 
 			break;
-		case 0b010: // East only
+		case EAST: // East only
 			break;
-		case 0b0100: // South only
+		case SOUTH: // South only
 			break;
-		case 0b01000: // West only
+		case WEST: // West only
 			break;
-
+		case (NORTH|EAST):
+			break;
+		case (NORTH|SOUTH):
+			break;
+		case (NORTH|WEST):
+			break;
+		case (EAST|SOUTH):
+			break;
+		case (EAST|WEST):
+			break;
+		case (SOUTH|WEST):
+			break;
+		case (NORTH|EAST|SOUTH):
+			break;
+		case (NORTH|EAST|WEST):
+			break;
+		case (NORTH|SOUTH|WEST):
+			break;
+		case (EAST|SOUTH|WEST):
+			break;
+		case (NORTH|EAST | SOUTH | WEST):
+			break;
 	}
 }
 
