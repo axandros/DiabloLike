@@ -2,6 +2,8 @@
 #include "DungeonSpawner.h"
 #include "GenericDungeon.h"
 #include "TilesetAsset.h"
+#include "Engine/LevelStreamingDynamic.h"
+#include "Engine/World.h"
 
 UDungeonSpawner::UDungeonSpawner()
 {
@@ -104,6 +106,18 @@ void UDungeonSpawner::SpawnTile(FGenericTile tile, int gridX, int gridY)
 			worldToSpawn = RandomTile(Tileset->NESW_Tiles);
 			break;
 	}
+
+	FVector Location = FVector(0, 0, 0);
+	FRotator Rotation = FRotator();
+	bool bOutSuccess = true;
+
+	ULevelStreamingDynamic* level = ULevelStreamingDynamic::LoadLevelInstanceBySoftObjectPtr(GetWorld()	, worldToSpawn,
+		Location, Rotation, bOutSuccess);
+
+
+	level->OnLevelLoaded.AddDynamic(this, &UDungeonSpawner::AreAllLevelsLoaded);
+	levelsLoading.Add(level);
+	
 }
 
 TSoftObjectPtr<UWorld> UDungeonSpawner::RandomTile(TArray<TSoftObjectPtr<UWorld>> tilesetCollection)
@@ -116,4 +130,23 @@ TSoftObjectPtr<UWorld> UDungeonSpawner::RandomTile(TArray<TSoftObjectPtr<UWorld>
 float UDungeonSpawner::percentLoadedLevels()
 {
 	return 0.0f;
+}
+
+void UDungeonSpawner::AreAllLevelsLoaded()
+{
+	bool levelsLoaded = true;
+	int num = levelsLoading.Num();
+	for (int i = 0; i < num && levelsLoaded; i++) {
+		//(ULevelStreamingDynamic in levelsLoading)
+		ULevelStreamingDynamic* level = levelsLoading[1];
+		if (! level->IsLevelLoaded()) {
+			levelsLoaded = false;
+		}
+	}
+
+	if (levelsLoaded) {
+		AllLevelsLoaded();
+	}
+
+	return;
 }

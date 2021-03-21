@@ -8,6 +8,7 @@
 class UGenericDungeon;
 class UTilesetAsset;
 struct FGenericTile;
+class ULevelStreamingDynamic;
 
 /**
  * 
@@ -35,11 +36,16 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 		float TileSize;
 
+	UFUNCTION(BlueprintImplementableEvent)
+	void AllLevelsLoaded();
+
 private:
 	UGenericDungeon* _dungeon;
 	FVector SpawnLocation;
+	TArray<ULevelStreamingDynamic*> levelsLoading;
 
 	void SpawnTile(FGenericTile tile, int gridX, int gridY);
 	TSoftObjectPtr<UWorld> RandomTile(TArray<TSoftObjectPtr<UWorld>> tilesetCollection);
 	float percentLoadedLevels();
+	void AreAllLevelsLoaded();
 };
