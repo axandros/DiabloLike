@@ -45,6 +45,7 @@ void UDungeonSpawner::SetDungeon(UGenericDungeon* dungeon)
 	if (dungeon != NULL) { _dungeon = dungeon; }
 }
 
+/*
 void UDungeonSpawner::SpawnTile(FGenericTile tile, int gridX, int gridY)
 {
 	if (Tileset != NULL) {
@@ -136,6 +137,7 @@ void UDungeonSpawner::SpawnTile(FGenericTile tile, int gridX, int gridY)
 	}
 	
 }
+*/
 
 TSoftObjectPtr<UWorld> UDungeonSpawner::RandomTile(TArray<TSoftObjectPtr<UWorld>> tilesetCollection)
 {
@@ -162,6 +164,7 @@ float UDungeonSpawner::percentLoadedLevels()
 	return float(loaded)/ float(num);
 }
 
+/*
 void UDungeonSpawner::AreAllLevelsLoaded()
 {
 	UE_LOG(LogTemp, Warning, TEXT("Called are all levels loaded"));
@@ -181,3 +184,4 @@ void UDungeonSpawner::AreAllLevelsLoaded()
 
 	return;
 }
+*/

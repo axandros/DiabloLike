@@ -44,9 +44,10 @@ private:
 	FVector SpawnLocation;
 	TArray<ULevelStreamingDynamic*> levelsLoading;
 
+	UFUNCTION(BlueprintImplementableEvent)
 	void SpawnTile(FGenericTile tile, int gridX, int gridY);
 	TSoftObjectPtr<UWorld> RandomTile(TArray<TSoftObjectPtr<UWorld>> tilesetCollection);
 	float percentLoadedLevels();
-	UFUNCTION()
+	UFUNCTION(BlueprintImplementableEvent)
 	void AreAllLevelsLoaded();
 };
