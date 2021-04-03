@@ -7,6 +7,7 @@
 
 UDungeonSpawner::UDungeonSpawner()
 {
+	levelsLoading = TArray<ULevelStreamingDynamic*>();
 }
 
 UDungeonSpawner::~UDungeonSpawner()
@@ -20,7 +21,7 @@ void UDungeonSpawner::SpawnDungeon(FVector StartLocation)
 		int dungeonSize = _dungeon->GetNumberOfTiles();
 		TArray<FGenericTile> tiles = TArray<FGenericTile>();
 		_dungeon->GetAllTiles(tiles);
-		for (int index = 0; index < dungeonSize; index++) {
+		for (int index = 0; index < dungeonSize-1; index++) {
 			int x, y = 0;
 			_dungeon->ConvertIntToCoordinates(index, x, y);
 			SpawnTile(tiles[index], x, y);
@@ -46,21 +47,22 @@ void UDungeonSpawner::SetDungeon(UGenericDungeon* dungeon)
 
 void UDungeonSpawner::SpawnTile(FGenericTile tile, int gridX, int gridY)
 {
-	FVector worldPosition = FVector(gridX + TileSize, gridY + TileSize, 0);
-	worldPosition += SpawnLocation;
-	unsigned int flags = tile.GetExitFlags();
-	const int NORTH = FGenericTile::fNORTH;
-	const int EAST = FGenericTile::fEAST;
-	const int SOUTH = FGenericTile::fSOUTH;
-	const int WEST = FGenericTile::fWEST;
+	if (Tileset != NULL) {
+		FVector worldPosition = FVector(gridX + TileSize, gridY + TileSize, 0);
+		worldPosition += SpawnLocation;
+		unsigned int flags = tile.GetExitFlags();
+		const int NORTH = FGenericTile::fNORTH;
+		const int EAST = FGenericTile::fEAST;
+		const int SOUTH = FGenericTile::fSOUTH;
+		const int WEST = FGenericTile::fWEST;
 
-	TSoftObjectPtr<UWorld> worldToSpawn;
+		TSoftObjectPtr<UWorld> worldToSpawn;
 
-	switch (flags) {
-		case 0 : // none
+		switch (flags) {
+		case 0: // none
 			worldToSpawn = RandomTile(Tileset->NoExit_Tiles);
 			break;
-		case NORTH : 
+		case NORTH:
 			worldToSpawn = RandomTile(Tileset->N_Tiles);
 			break;
 		case EAST: // East only
@@ -72,59 +74,76 @@ void UDungeonSpawner::SpawnTile(FGenericTile tile, int gridX, int gridY)
 		case WEST: // West only
 			worldToSpawn = RandomTile(Tileset->W_Tiles);
 			break;
-		case (NORTH|EAST):
+		case (NORTH | EAST):
 			worldToSpawn = RandomTile(Tileset->NE_Tiles);
 			break;
-		case (NORTH|SOUTH):
+		case (NORTH | SOUTH):
 			worldToSpawn = RandomTile(Tileset->NS_Tiles);
 			break;
-		case (NORTH|WEST):
+		case (NORTH | WEST):
 			worldToSpawn = RandomTile(Tileset->NW_Tiles);
 			break;
-		case (EAST|SOUTH):
+		case (EAST | SOUTH):
 			worldToSpawn = RandomTile(Tileset->ES_Tiles);
 			break;
-		case (EAST|WEST):
+		case (EAST | WEST):
 			worldToSpawn = RandomTile(Tileset->EW_Tiles);
 			break;
-		case (SOUTH|WEST):
+		case (SOUTH | WEST):
 			worldToSpawn = RandomTile(Tileset->SW_Tiles);
 			break;
-		case (NORTH|EAST|SOUTH):
+		case (NORTH | EAST | SOUTH):
 			worldToSpawn = RandomTile(Tileset->NES_Tiles);
 			break;
-		case (NORTH|EAST|WEST):
+		case (NORTH | EAST | WEST):
 			worldToSpawn = RandomTile(Tileset->NEW_Tiles);
 			break;
-		case (NORTH|SOUTH|WEST):
+		case (NORTH | SOUTH | WEST):
 			worldToSpawn = RandomTile(Tileset->NSW_Tiles);
 			break;
-		case (EAST|SOUTH|WEST):
+		case (EAST | SOUTH | WEST):
 			worldToSpawn = RandomTile(Tileset->ESW_Tiles);
 			break;
-		case (NORTH|EAST | SOUTH | WEST):
+		case (NORTH | EAST | SOUTH | WEST):
 			worldToSpawn = RandomTile(Tileset->NESW_Tiles);
 			break;
+		}
+
+		FVector Location = FVector(0, 0, 0);
+		FRotator Rotation = FRotator();
+		bool bOutSuccess = true;
+		if (worldToSpawn.IsValid()) {
+			ULevelStreamingDynamic* level = ULevelStreamingDynamic::LoadLevelInstanceBySoftObjectPtr(GetWorld(), worldToSpawn,
+				Location, Rotation, bOutSuccess);
+
+			UE_LOG(LogTemp, Warning, TEXT("Adding tile to world."))
+
+				if (level) {
+					level->OnLevelLoaded.AddDynamic(this, &UDungeonSpawner::AreAllLevelsLoaded);
+					levelsLoading.Add(level);
+				}
+				else
+				{
+					UE_LOG(LogTemp, Warning, TEXT("Tile failed to be created."))
+				}
+		}
 	}
-
-	FVector Location = FVector(0, 0, 0);
-	FRotator Rotation = FRotator();
-	bool bOutSuccess = true;
-
-	ULevelStreamingDynamic* level = ULevelStreamingDynamic::LoadLevelInstanceBySoftObjectPtr(GetWorld()	, worldToSpawn,
-		Location, Rotation, bOutSuccess);
-
-
-	level->OnLevelLoaded.AddDynamic(this, &UDungeonSpawner::AreAllLevelsLoaded);
-	levelsLoading.Add(level);
+	else {
+		UE_LOG(LogTemp, Warning, TEXT("Tileset not set."))
+	}
 	
 }
 
 TSoftObjectPtr<UWorld> UDungeonSpawner::RandomTile(TArray<TSoftObjectPtr<UWorld>> tilesetCollection)
 {
-	int size = tilesetCollection.Num();
-	int randNum = FMath::RandRange(0, size);
-	return tilesetCollection[randNum];
+	
+		int size = tilesetCollection.Num();
+		int randNum = FMath::RandRange(0, size-1);
+		UE_LOG(LogTemp, Warning, TEXT("TilesetCollection Size: %i, Rand: %i"),size, randNum );
+		return tilesetCollection[randNum];
+	
+	//UE_LOG(LogTemp, Warning, TEXT("No tile selected for random.");
+	//return TSoftObjectPtr<UWorld>();
 }
 
 float UDungeonSpawner::percentLoadedLevels()

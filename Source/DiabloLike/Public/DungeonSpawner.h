@@ -34,7 +34,7 @@ public:
 		UTilesetAsset* Tileset;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-		float TileSize;
+		float TileSize = 1000.0f;
 
 	UFUNCTION(BlueprintImplementableEvent)
 	void AllLevelsLoaded();
@@ -47,5 +47,6 @@ private:
 	void SpawnTile(FGenericTile tile, int gridX, int gridY);
 	TSoftObjectPtr<UWorld> RandomTile(TArray<TSoftObjectPtr<UWorld>> tilesetCollection);
 	float percentLoadedLevels();
+	UFUNCTION()
 	void AreAllLevelsLoaded();
 };
