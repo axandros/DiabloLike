@@ -127,6 +127,9 @@ void UDungeonSpawner::SpawnTile(FGenericTile tile, int gridX, int gridY)
 					UE_LOG(LogTemp, Warning, TEXT("Tile failed to be created."))
 				}
 		}
+		else {
+			UE_LOG(LogTemp, Warning, TEXT("World To Load not valid"))
+		}
 	}
 	else {
 		UE_LOG(LogTemp, Warning, TEXT("Tileset not set."))
@@ -136,23 +139,32 @@ void UDungeonSpawner::SpawnTile(FGenericTile tile, int gridX, int gridY)
 
 TSoftObjectPtr<UWorld> UDungeonSpawner::RandomTile(TArray<TSoftObjectPtr<UWorld>> tilesetCollection)
 {
-	
-		int size = tilesetCollection.Num();
-		int randNum = FMath::RandRange(0, size-1);
-		UE_LOG(LogTemp, Warning, TEXT("TilesetCollection Size: %i, Rand: %i"),size, randNum );
-		return tilesetCollection[randNum];
-	
-	//UE_LOG(LogTemp, Warning, TEXT("No tile selected for random.");
-	//return TSoftObjectPtr<UWorld>();
+	int size = tilesetCollection.Num();
+	int randNum = FMath::RandRange(0, size-1);
+	UE_LOG(LogTemp, Warning, TEXT("TilesetCollection Size: %i, Rand: %i"),size, randNum );
+	TSoftObjectPtr<UWorld> ret = tilesetCollection[randNum];
+	if (!ret.IsValid()) {
+		UE_LOG(LogTemp, Warning, TEXT("RandomTile: World not valid"))
+	}
+	return ret;
 }
 
 float UDungeonSpawner::percentLoadedLevels()
 {
-	return 0.0f;
+	int loaded = 0;
+	int num = levelsLoading.Num();
+	for (int i = 0; i < num; i++) {
+		ULevelStreamingDynamic* level = levelsLoading[1];
+		if (level->IsLevelLoaded()) {
+			loaded++;
+		}
+	}
+	return float(loaded)/ float(num);
 }
 
 void UDungeonSpawner::AreAllLevelsLoaded()
 {
+	UE_LOG(LogTemp, Warning, TEXT("Called are all levels loaded"));
 	bool levelsLoaded = true;
 	int num = levelsLoading.Num();
 	for (int i = 0; i < num && levelsLoaded; i++) {
