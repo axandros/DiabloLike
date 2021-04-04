@@ -5,16 +5,16 @@
 #include "Engine/LevelStreamingDynamic.h"
 #include "Engine/World.h"
 
-UDungeonSpawner::UDungeonSpawner()
+ADungeonSpawner::ADungeonSpawner()
 {
 	levelsLoading = TArray<ULevelStreamingDynamic*>();
 }
 
-UDungeonSpawner::~UDungeonSpawner()
+ADungeonSpawner::~ADungeonSpawner()
 {
 }
 
-void UDungeonSpawner::SpawnDungeon(FVector StartLocation)
+void ADungeonSpawner::SpawnDungeon(FVector StartLocation)
 {
 	SpawnLocation = StartLocation;
 	if (Tileset != NULL) {
@@ -29,24 +29,23 @@ void UDungeonSpawner::SpawnDungeon(FVector StartLocation)
 	}
 }
 
-void UDungeonSpawner::SpawnDungeon(FVector StartLocation, UGenericDungeon* dungeon)
+void ADungeonSpawner::SpawnDungeon(FVector StartLocation, UGenericDungeon* dungeon)
 {
 	SetDungeon(dungeon);
 	SpawnDungeon(StartLocation);
 }
 
-UGenericDungeon* UDungeonSpawner::GetDungeon()
+UGenericDungeon* ADungeonSpawner::GetDungeon()
 {
 	return _dungeon;
 }
 
-void UDungeonSpawner::SetDungeon(UGenericDungeon* dungeon)
+void ADungeonSpawner::SetDungeon(UGenericDungeon* dungeon)
 {
 	if (dungeon != NULL) { _dungeon = dungeon; }
 }
-
 /*
-void UDungeonSpawner::SpawnTile(FGenericTile tile, int gridX, int gridY)
+void ADungeonSpawner::SpawnTile(FGenericTile tile, int gridX, int gridY)
 {
 	if (Tileset != NULL) {
 		FVector worldPosition = FVector(gridX + TileSize, gridY + TileSize, 0);
@@ -120,7 +119,7 @@ void UDungeonSpawner::SpawnTile(FGenericTile tile, int gridX, int gridY)
 			UE_LOG(LogTemp, Warning, TEXT("Adding tile to world."))
 
 				if (level) {
-					level->OnLevelLoaded.AddDynamic(this, &UDungeonSpawner::AreAllLevelsLoaded);
+					level->OnLevelLoaded.AddDynamic(this, &ADungeonSpawner::AreAllLevelsLoaded);
 					levelsLoading.Add(level);
 				}
 				else
@@ -136,10 +135,9 @@ void UDungeonSpawner::SpawnTile(FGenericTile tile, int gridX, int gridY)
 		UE_LOG(LogTemp, Warning, TEXT("Tileset not set."))
 	}
 	
-}
-*/
+}*/
 
-TSoftObjectPtr<UWorld> UDungeonSpawner::RandomTile(TArray<TSoftObjectPtr<UWorld>> tilesetCollection)
+TSoftObjectPtr<UWorld> ADungeonSpawner::RandomTile(TArray<TSoftObjectPtr<UWorld>> tilesetCollection)
 {
 	int size = tilesetCollection.Num();
 	int randNum = FMath::RandRange(0, size-1);
@@ -151,7 +149,7 @@ TSoftObjectPtr<UWorld> UDungeonSpawner::RandomTile(TArray<TSoftObjectPtr<UWorld>
 	return ret;
 }
 
-float UDungeonSpawner::percentLoadedLevels()
+float ADungeonSpawner::percentLoadedLevels()
 {
 	int loaded = 0;
 	int num = levelsLoading.Num();
@@ -165,7 +163,7 @@ float UDungeonSpawner::percentLoadedLevels()
 }
 
 /*
-void UDungeonSpawner::AreAllLevelsLoaded()
+void ADungeonSpawner::AreAllLevelsLoaded()
 {
 	UE_LOG(LogTemp, Warning, TEXT("Called are all levels loaded"));
 	bool levelsLoaded = true;
@@ -185,3 +183,4 @@ void UDungeonSpawner::AreAllLevelsLoaded()
 	return;
 }
 */
+//void ADungeonSpawner::AllLevelsLoaded() {}

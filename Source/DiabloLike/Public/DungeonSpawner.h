@@ -3,23 +3,24 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "GenericDungeon.h"
 #include "DungeonSpawner.generated.h"
 
-class UGenericDungeon;
+//class UGenericDungeon;
 class UTilesetAsset;
-struct FGenericTile;
+//struct FGenericTile;
 class ULevelStreamingDynamic;
 
 /**
  * 
  */
 UCLASS(Blueprintable)
-class DIABLOLIKE_API UDungeonSpawner : public UObject
+class DIABLOLIKE_API ADungeonSpawner : public AActor
 {
 public:
 	GENERATED_BODY()
-	UDungeonSpawner();
-	~UDungeonSpawner();
+	ADungeonSpawner();
+	~ADungeonSpawner();
 
 	UFUNCTION(BlueprintCallable, Category = "Spawner")
 	void SpawnDungeon(FVector StartLocation);
@@ -37,17 +38,24 @@ public:
 		float TileSize = 1000.0f;
 
 	UFUNCTION(BlueprintImplementableEvent)
-	void AllLevelsLoaded();
+		void AllLevelsLoaded();
+
+	// These two should be BlueprintNativeEvent, but that won't compile.
+	UFUNCTION(BlueprintImplementableEvent)
+		void SpawnTile(FGenericTile tile, int gridX, int gridY);
+	UFUNCTION(BlueprintImplementableEvent)
+		void AreAllLevelsLoaded();
 
 private:
 	UGenericDungeon* _dungeon;
-	FVector SpawnLocation;
-	TArray<ULevelStreamingDynamic*> levelsLoading;
 
-	UFUNCTION(BlueprintImplementableEvent)
-	void SpawnTile(FGenericTile tile, int gridX, int gridY);
-	TSoftObjectPtr<UWorld> RandomTile(TArray<TSoftObjectPtr<UWorld>> tilesetCollection);
+protected:
 	float percentLoadedLevels();
-	UFUNCTION(BlueprintImplementableEvent)
-	void AreAllLevelsLoaded();
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	TArray<ULevelStreamingDynamic*> levelsLoading;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	FVector SpawnLocation;
+
+	UFUNCTION(BlueprintCallable)
+	TSoftObjectPtr<UWorld> RandomTile(TArray<TSoftObjectPtr<UWorld>> tilesetCollection);
 };
