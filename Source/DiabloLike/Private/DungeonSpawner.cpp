@@ -27,6 +27,9 @@ void ADungeonSpawner::SpawnDungeon(FVector StartLocation)
 			SpawnTile(tiles[index], x, y);
 		}
 	}
+	else {
+		UE_LOG(LogTemp, Error, TEXT("DungeonSpawner: No Tileset Set"))
+	}
 }
 
 void ADungeonSpawner::SpawnDungeon(FVector StartLocation, UGenericDungeon* dungeon)
@@ -42,7 +45,9 @@ UGenericDungeon* ADungeonSpawner::GetDungeon()
 
 void ADungeonSpawner::SetDungeon(UGenericDungeon* dungeon)
 {
+	UE_LOG(LogTemp, Log, TEXT("DungeonSpawner: Setting dungeon."))
 	if (dungeon != NULL) { _dungeon = dungeon; }
+	else{UE_LOG(LogTemp, Error, TEXT("DungeonSpawner: Attempted to set dungeon to null value.")) }
 }
 /*
 void ADungeonSpawner::SpawnTile(FGenericTile tile, int gridX, int gridY)

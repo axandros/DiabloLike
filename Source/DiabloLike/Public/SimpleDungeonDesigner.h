@@ -9,30 +9,19 @@
 
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
-class DIABLOLIKE_API USimpleDungeonDesigner : public UActorComponent
+class DIABLOLIKE_API USimpleDungeonDesigner : public UObject
 {
 	GENERATED_BODY()
 
 public:	
-	// Sets default values for this component's properties
-	USimpleDungeonDesigner();
+	UFUNCTION(BlueprintCallable)
+		static void MakeDungeon(UGenericDungeon*& dungeon);
 
 	UFUNCTION(BlueprintCallable)
-		UGenericDungeon* GetDungeon();
+		static void SpelunkyWander(int dimensions,UGenericDungeon*& dungeon);
 
-protected:
-	// Called when the game starts
-	virtual void BeginPlay() override;
-
-
-	UGenericDungeon* _dungeon;
-
-	UFUNCTION(BlueprintCallable)
-	void MakeDungeon();
-
-public:	
-	// Called every frame
-	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
-
-		
+private:
+	static bool SpelunkyUp(UGenericDungeon* dungeon, int xPos, int yPos);
+	static bool SpelunkyRight(UGenericDungeon* dungeon, int xPos, int yPos);
+	static bool SpelunkyDown(UGenericDungeon* dungeon, int xPos, int yPos);
 };

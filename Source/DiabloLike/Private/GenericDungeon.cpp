@@ -201,17 +201,20 @@ bool UGenericDungeon::GetTile(FGenericTile& tile, int x, int y)
 	return ret;
 }
 
-bool UGenericDungeon::SetTile(int x, int y, bool North, bool South, bool East, bool West)
+bool UGenericDungeon::SetTile(int x, int y, bool North, bool South, bool East, bool West, bool Empty)
 {
 	bool ret = false;
 	UE_LOG(Dungeon, Warning, TEXT("@ Setting %i, %i "), x, y)
-		FGenericTile tile; // = FGenericTile();
-	if(GetTile(tile, x, y)){
-		tile.Void = true;
+	FGenericTile tile; // = FGenericTile();
+	int tileIndex = ConvertCoordToInt(x, y);
+	if(!IsOutOfBounds( x, y)){
+		UE_LOG(LogTemp, Warning, TEXT("UGenericDungeon: Setting Tile"))
+		tile.Void = Empty;
 		tile.North = North;
 		tile.South = South;
 		tile.East = East;
 		tile.West = West;
+		_dungeonArray[tileIndex] = tile;
 		ret = true;
 	}
 
@@ -270,10 +273,7 @@ int UGenericDungeon::GetNumberOfTiles()
 
 void UGenericDungeon::Initialize() {
 	UE_LOG(Dungeon, Warning, TEXT("Setting up Generic Dungeon."))
-		//_dungeonArray = TArray<FGenericTile*>();
-		UE_LOG(Dungeon, Warning, TEXT("_dungeonArray Num: %i"), _dungeonArray.Num())
-		//_dungeonArray.SetNum(1, true);
-		UE_LOG(Dungeon, Warning, TEXT("_dungeonArray Post Set 0 Num: %i"), _dungeonArray.Num())
+	
 }
 
 FGenericTile FGenericTile::MakeCopy()
@@ -294,4 +294,15 @@ unsigned int FGenericTile::GetExitFlags()
 		| fSOUTH & int (South)
 		| fWEST & int(West);
 	return ret;
+}
+
+void UGenericDungeon::FillWithEmptyTiles() {
+	for (int i = 0; i < _dungeonArray.Num(); i++) {
+		FGenericTile tile = FGenericTile();
+		tile.North = false;
+		tile.South = false;
+		tile.East = false;
+		tile.West = false;
+		tile.Void = false;
+	}
 }

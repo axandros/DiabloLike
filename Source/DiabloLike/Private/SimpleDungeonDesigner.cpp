@@ -3,57 +3,16 @@
 
 #include "SimpleDungeonDesigner.h"
 
-// Sets default values for this component's properties
-USimpleDungeonDesigner::USimpleDungeonDesigner()
-{
-	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
-	// off to improve performance if you don't need them.
-	PrimaryComponentTick.bCanEverTick = true;
 
-	_dungeon = CreateDefaultSubobject<UGenericDungeon>(TEXT("The Dungeon"));
-
-	// ...
-}
-
-
-// Called when the game starts
-void USimpleDungeonDesigner::BeginPlay()
-{
-	Super::BeginPlay();
-
-	// ...
-	/*
-	FString compileDate = __DATE__;
-	FString compileTime = __TIME__;
-	UE_LOG(LogTemp, Warning, TEXT("Built %s %s"), *compileDate, *compileTime)
-
-		if (_dungeon == nullptr) {
-			UE_LOG(LogTemp, Warning, TEXT("Why is _dungron a nullptr?"))
-		}
-	MakeDungeon();
-	UE_LOG(LogTemp, Warning, TEXT("Make Dungeon done."))
-	*/
-}
-
-
-// Called every frame
-void USimpleDungeonDesigner::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
-{
-	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-
-	// ...
-}
-
-void USimpleDungeonDesigner::MakeDungeon() {
-	/*
+void USimpleDungeonDesigner::MakeDungeon(UGenericDungeon*& _dungeon) {
+	_dungeon = NewObject<UGenericDungeon>();//CreateDefaultSubobject<UGenericDungeon>(TEXT("The Dungeon"));
 	_dungeon->Initialize();
-	_dungeon->SetDungeonDimensions(5);
-	
-	UE_LOG(LogTemp, Warning, TEXT("Dimensions Set"))
-	_dungeon->SetStartTile(0, 0);
+	_dungeon->SetDungeonDimensions(5, 5);
+
+	UE_LOG(LogTemp, Warning, TEXT("Simple Designer: Dimensions Set"))
+		_dungeon->SetStartTile(0, 0);
 	_dungeon->SetGoalTile(0, 0);
-	*/
-	/*
+
 	_dungeon->SetTile(0, 0, false, false, true, false);
 	_dungeon->SetTile(0, 1, true, false, false, true);
 	_dungeon->SetTile(1, 1, true, true, true, false);
@@ -63,9 +22,109 @@ void USimpleDungeonDesigner::MakeDungeon() {
 	_dungeon->SetTile(2, 4, true, false, false, true);
 	_dungeon->SetTile(3, 4, true, true, false, false);
 	_dungeon->SetTile(4, 4, false, true, false, false);
-	*/
+
+	_dungeon->SetStartTile(0, 0);
+	_dungeon->SetGoalTile(4, 4);
 }
 
-UGenericDungeon* USimpleDungeonDesigner::GetDungeon() {
-	return _dungeon;
+void USimpleDungeonDesigner::SpelunkyWander(int dimensions, UGenericDungeon*& _dungeon) {
+	_dungeon = NewObject<UGenericDungeon>();
+	_dungeon->Initialize();
+	_dungeon->SetDungeonDimensions(5, 5);
+	_dungeon->FillWithEmptyTiles();
+	
+	// Define local variables
+	int xPos, yPos = 0;
+
+	// Choose the Start Tile
+	xPos = FMath::RandRange(0,dimensions);
+	_dungeon->SetStartTile(0, xPos);
+
+	while (yPos < dimensions) {
+		int direction = FMath::RandRange(0, 2);
+		switch (direction) {
+		case 0:
+			if (SpelunkyUp(_dungeon, xPos, yPos))
+			{
+				xPos += 1;
+			}
+			break;
+		case 1:
+			SpelunkyDown(_dungeon, xPos, yPos);
+			yPos += 1;
+			break;
+		case 2:
+			if (SpelunkyDown(_dungeon, xPos, yPos)) {
+				xPos -= 1;
+			}
+			break;
+		}
+	}
+
+	_dungeon->SetGoalTile(xPos, yPos-1);
+}
+
+bool USimpleDungeonDesigner::SpelunkyUp(UGenericDungeon* dungeon, int xPos, int yPos)
+{
+	bool ret = false;
+	if (!dungeon->IsOutOfBounds(xPos+1, yPos)) {
+		FGenericTile tile;
+		// This tile
+		dungeon->GetTile(tile, xPos, yPos);
+		tile.North = true;
+		tile.Void = false;
+		dungeon->SetTile(xPos, yPos, tile);
+
+		// The neighbor 
+		dungeon->GetTile(tile, xPos+1, yPos);
+		tile.South = true;
+		tile.Void = false;
+		dungeon->SetTile(xPos+1, yPos, tile);
+		ret = true;
+	}
+	return ret;
+}
+
+bool USimpleDungeonDesigner::SpelunkyRight(UGenericDungeon* dungeon, int xPos, int yPos)
+{
+	bool ret = false;
+	if (!dungeon->IsOutOfBounds(xPos, yPos+1)) {
+		FGenericTile tile;
+		// This tile
+		dungeon->GetTile(tile, xPos, yPos);
+		tile.East = true;
+		tile.Void = false;
+		dungeon->SetTile(xPos, yPos, tile);
+
+		// The neighbor 
+		dungeon->GetTile(tile, xPos , yPos+1);
+		tile.West = true;
+		tile.Void = false;
+		dungeon->SetTile(xPos , yPos+1, tile);
+		ret = true;
+
+		ret = true;
+	}
+	return ret;
+}
+
+bool USimpleDungeonDesigner::SpelunkyDown(UGenericDungeon* dungeon, int xPos, int yPos)
+{
+	bool ret = false;
+	if (!dungeon->IsOutOfBounds(xPos-1, yPos)) {
+		FGenericTile tile;
+		// This tile
+		dungeon->GetTile(tile, xPos, yPos);
+		tile.South = true;
+		tile.Void = false;
+		dungeon->SetTile(xPos, yPos, tile);
+
+		// The neighbor 
+		dungeon->GetTile(tile, xPos - 1, yPos);
+		tile.North = true;
+		tile.Void = false;
+		dungeon->SetTile(xPos - 1, yPos, tile);
+		ret = true;
+	}
+	return ret;
 }

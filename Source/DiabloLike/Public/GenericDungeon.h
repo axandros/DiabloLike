@@ -63,7 +63,7 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 		bool SetTile(int x, int y, FGenericTile tile);
-	bool SetTile(int x, int y, bool North, bool South, bool East, bool West);
+	bool SetTile(int x, int y, bool North, bool South, bool East, bool West, bool Empty = false);
 
 	UFUNCTION(BlueprintCallable)
 		void GetAdjacentTileIndices(TArray<FIntVector>& AdjacentTileIndices, int x, int y);
@@ -72,6 +72,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 		void GetAdjacentTiles(TArray<FGenericTile> AdjacentTiles, const FIntVector& originIndex);
 	void GetAdjacentTiles(TArray<FGenericTile> AdjacentTiles, int x, int y);
+
+	UFUNCTION(BlueprintCallable)
+		void FillWithEmptyTiles();
 
 	// Blueprint Pure
 	
@@ -114,9 +117,6 @@ public:
 		int GetDungeonWidth();
 	UFUNCTION(BLUEPRINTPURE)
 		int GetDungeonHeight();
-
-	
-	
 
 	void Initialize();
 	
