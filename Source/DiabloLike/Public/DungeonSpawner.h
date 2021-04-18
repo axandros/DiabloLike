@@ -12,7 +12,7 @@ class UTilesetAsset;
 class ULevelStreamingDynamic;
 
 /** Begins level streaming based on a given FTileset and UGenericDungeon */
-UCLASS(Blueprintable)
+UCLASS(ABSTRACT)
 class DIABLOLIKE_API ADungeonSpawner : public AActor
 {
 public:
