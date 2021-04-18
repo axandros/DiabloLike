@@ -304,5 +304,6 @@ void UGenericDungeon::FillWithEmptyTiles() {
 		tile.East = false;
 		tile.West = false;
 		tile.Void = false;
+		_dungeonArray[i] = tile;
 	}
 }

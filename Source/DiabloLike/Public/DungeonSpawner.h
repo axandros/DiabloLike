@@ -23,8 +23,8 @@ public:
 	~ADungeonSpawner();
 
 	UFUNCTION(BlueprintCallable, Category = "Spawner")
-	void SpawnDungeon(FVector StartLocation);
-	void SpawnDungeon(FVector StartLocation, UGenericDungeon* dungeon);
+		void SpawnDungeon(FVector StartLocation, bool surroundWithEmpty = false);
+	void SpawnDungeon(FVector StartLocation, UGenericDungeon* dungeon, bool surroundWithEmpty = false);
 
 	UFUNCTION(BlueprintCallable, Category = "Spawner")
 		UGenericDungeon* GetDungeon();
@@ -45,6 +45,9 @@ public:
 		void SpawnTile(FGenericTile tile, int gridX, int gridY);
 	UFUNCTION(BlueprintImplementableEvent)
 		void AreAllLevelsLoaded();
+
+	UFUNCTION(BlueprintCallable, Category = "Spawner")
+		void SurroundWithEmpty();
 
 private:
 	UGenericDungeon* _dungeon;

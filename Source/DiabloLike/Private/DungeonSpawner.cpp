@@ -14,7 +14,7 @@ ADungeonSpawner::~ADungeonSpawner()
 {
 }
 
-void ADungeonSpawner::SpawnDungeon(FVector StartLocation)
+void ADungeonSpawner::SpawnDungeon(FVector StartLocation, bool surroundWithEmpty)
 {
 	SpawnLocation = StartLocation;
 	if (Tileset != NULL) {
@@ -26,16 +26,19 @@ void ADungeonSpawner::SpawnDungeon(FVector StartLocation)
 			_dungeon->ConvertIntToCoordinates(index, x, y);
 			SpawnTile(tiles[index], x, y);
 		}
+		if (surroundWithEmpty) {
+			SurroundWithEmpty();
+		}
 	}
 	else {
 		UE_LOG(LogTemp, Error, TEXT("DungeonSpawner: No Tileset Set"))
 	}
 }
 
-void ADungeonSpawner::SpawnDungeon(FVector StartLocation, UGenericDungeon* dungeon)
+void ADungeonSpawner::SpawnDungeon(FVector StartLocation, UGenericDungeon* dungeon, bool surroundWithEmpty)
 {
 	SetDungeon(dungeon);
-	SpawnDungeon(StartLocation);
+	SpawnDungeon(StartLocation, surroundWithEmpty);
 }
 
 UGenericDungeon* ADungeonSpawner::GetDungeon()
@@ -152,6 +155,26 @@ TSoftObjectPtr<UWorld> ADungeonSpawner::RandomTile(TArray<TSoftObjectPtr<UWorld>
 		UE_LOG(LogTemp, Warning, TEXT("RandomTile: World not valid"))
 	}
 	return ret;
+}
+
+void ADungeonSpawner::SurroundWithEmpty()
+{
+	int width = _dungeon->GetWidth();
+	int height = _dungeon->GetHeight();
+	FGenericTile emptyTile = FGenericTile();
+	emptyTile.Void = false;
+
+	// Do the East/West Edges and the four corners.
+	for (int x = -1; x < height + 1; x++) {
+		SpawnTile(emptyTile, x, -1);
+		SpawnTile(emptyTile, x, width);
+	}
+
+	// Do the North/South Edges
+	for (int y = 0; y < width; y++) {
+		SpawnTile(emptyTile, -1, y);
+		SpawnTile(emptyTile,height, y);
+	}
 }
 
 float ADungeonSpawner::percentLoadedLevels()

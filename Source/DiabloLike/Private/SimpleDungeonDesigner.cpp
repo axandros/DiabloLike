@@ -38,8 +38,8 @@ void USimpleDungeonDesigner::SpelunkyWander(int dimensions, UGenericDungeon*& _d
 
 	// Choose the Start Tile
 	xPos = FMath::RandRange(0,dimensions);
-	_dungeon->SetStartTile(0, xPos);
-
+	_dungeon->SetStartTile(xPos, 0);
+	
 	while (yPos < dimensions) {
 		int direction = FMath::RandRange(0, 2);
 		switch (direction) {
@@ -50,7 +50,7 @@ void USimpleDungeonDesigner::SpelunkyWander(int dimensions, UGenericDungeon*& _d
 			}
 			break;
 		case 1:
-			SpelunkyDown(_dungeon, xPos, yPos);
+			SpelunkyRight(_dungeon, xPos, yPos);
 			yPos += 1;
 			break;
 		case 2:
@@ -60,8 +60,9 @@ void USimpleDungeonDesigner::SpelunkyWander(int dimensions, UGenericDungeon*& _d
 			break;
 		}
 	}
-
+	
 	_dungeon->SetGoalTile(xPos, yPos-1);
+	
 }
 
 bool USimpleDungeonDesigner::SpelunkyUp(UGenericDungeon* dungeon, int xPos, int yPos)
