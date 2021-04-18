@@ -6,7 +6,6 @@
 
 void USimpleDungeonDesigner::MakeDungeon(UGenericDungeon*& _dungeon) {
 	_dungeon = NewObject<UGenericDungeon>();//CreateDefaultSubobject<UGenericDungeon>(TEXT("The Dungeon"));
-	_dungeon->Initialize();
 	_dungeon->SetDungeonDimensions(5, 5);
 
 	UE_LOG(LogTemp, Warning, TEXT("Simple Designer: Dimensions Set"))
@@ -29,7 +28,6 @@ void USimpleDungeonDesigner::MakeDungeon(UGenericDungeon*& _dungeon) {
 
 void USimpleDungeonDesigner::SpelunkyWander(int dimensions, UGenericDungeon*& _dungeon) {
 	_dungeon = NewObject<UGenericDungeon>();
-	_dungeon->Initialize();
 	_dungeon->SetDungeonDimensions(5, 5);
 	_dungeon->FillWithEmptyTiles();
 	

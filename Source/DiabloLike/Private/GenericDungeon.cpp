@@ -2,7 +2,6 @@
 
 #include "GenericDungeon.h"
 #include "DiabloLog.h"
-#include "FVector2DInt.h"
 
 DEFINE_LOG_CATEGORY(Dungeon);
 
@@ -269,11 +268,6 @@ int UGenericDungeon::GetHeight()
 int UGenericDungeon::GetNumberOfTiles()
 {
 	return _dungeonArray.Num()+1;
-}
-
-void UGenericDungeon::Initialize() {
-	UE_LOG(Dungeon, Warning, TEXT("Setting up Generic Dungeon."))
-	
 }
 
 FGenericTile FGenericTile::MakeCopy()
