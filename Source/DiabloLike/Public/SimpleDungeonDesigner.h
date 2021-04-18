@@ -7,32 +7,23 @@
 #include "GenericDungeon.h"
 #include "SimpleDungeonDesigner.generated.h"
 
-
+/** 'Library' of functions for generating a dungeon.*/
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
-class DIABLOLIKE_API USimpleDungeonDesigner : public UActorComponent
+class DIABLOLIKE_API USimpleDungeonDesigner : public UObject
 {
 	GENERATED_BODY()
 
 public:	
-	// Sets default values for this component's properties
-	USimpleDungeonDesigner();
-
+	/** Generates a pre-set dungeon. */
 	UFUNCTION(BlueprintCallable)
-		UGenericDungeon* GetDungeon();
+		static void MakeDungeon(UGenericDungeon*& dungeon);
 
-protected:
-	// Called when the game starts
-	virtual void BeginPlay() override;
-
-
-	UGenericDungeon* _dungeon;
-
+	/** Generate a dungeon using an algorithm similar to Spelunky's, but going from left to right instead of North to South. */
 	UFUNCTION(BlueprintCallable)
-	void MakeDungeon();
+		static void SpelunkyWander(int dimensions,UGenericDungeon*& dungeon);
 
-public:	
-	// Called every frame
-	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
-
-		
+private:
+	static bool SpelunkyUp(UGenericDungeon* dungeon, int xPos, int yPos);
+	static bool SpelunkyRight(UGenericDungeon* dungeon, int xPos, int yPos);
+	static bool SpelunkyDown(UGenericDungeon* dungeon, int xPos, int yPos);
 };
