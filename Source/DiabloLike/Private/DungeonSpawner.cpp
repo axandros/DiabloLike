@@ -177,19 +177,6 @@ void ADungeonSpawner::SurroundWithEmpty()
 	}
 }
 
-float ADungeonSpawner::percentLoadedLevels()
-{
-	int loaded = 0;
-	int num = levelsLoading.Num();
-	for (int i = 0; i < num; i++) {
-		ULevelStreamingDynamic* level = levelsLoading[1];
-		if (level->IsLevelLoaded()) {
-			loaded++;
-		}
-	}
-	return float(loaded)/ float(num);
-}
-
 bool ADungeonSpawner::AreAllLevelsLoaded()
 {
 	UE_LOG(LogTemp, Warning, TEXT("Called are all levels loaded"));
