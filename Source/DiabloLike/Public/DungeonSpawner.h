@@ -49,6 +49,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Spawner")
 		void SurroundWithEmpty();
 
+	UFUNCTION(BlueprintPure, Category = "Spawner")
+		float PercentLevelsLoaded();
+
 private:
 	UGenericDungeon* _dungeon;
 

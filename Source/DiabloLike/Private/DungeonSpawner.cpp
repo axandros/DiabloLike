@@ -198,7 +198,7 @@ void ADungeonSpawner::AreAllLevelsLoaded()
 	int num = levelsLoading.Num();
 	for (int i = 0; i < num && levelsLoaded; i++) {
 		//(ULevelStreamingDynamic in levelsLoading)
-		ULevelStreamingDynamic* level = levelsLoading[1];
+		ULevelStreamingDynamic* level = levelsLoading[i];
 		if (! level->IsLevelLoaded()) {
 			levelsLoaded = false;
 		}
@@ -212,3 +212,22 @@ void ADungeonSpawner::AreAllLevelsLoaded()
 }
 */
 //void ADungeonSpawner::AllLevelsLoaded() {}
+
+float ADungeonSpawner::PercentLevelsLoaded() {
+	int numOfLevels = levelsLoading.Num();
+	int numLoaded = 0;
+	for (int i = 0; i < numOfLevels; i++) {
+		if (levelsLoading[i]->IsLevelLoaded()) {
+			numLoaded++;
+		}
+	}
+
+	
+	float percent = 0;
+	if (numOfLevels != 0) {
+		percent = (float)numLoaded / (float)numOfLevels;
+	}
+		UE_LOG(LogTemp, Warning, TEXT("Num Levels: %i | Num Loaded: %i | Percent Loaded: %f"), numOfLevels, numLoaded, percent)
+
+	return percent;
+}
