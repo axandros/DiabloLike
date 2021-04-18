@@ -190,28 +190,23 @@ float ADungeonSpawner::percentLoadedLevels()
 	return float(loaded)/ float(num);
 }
 
-/*
-void ADungeonSpawner::AreAllLevelsLoaded()
+bool ADungeonSpawner::AreAllLevelsLoaded()
 {
 	UE_LOG(LogTemp, Warning, TEXT("Called are all levels loaded"));
 	bool levelsLoaded = true;
 	int num = levelsLoading.Num();
 	for (int i = 0; i < num && levelsLoaded; i++) {
-		//(ULevelStreamingDynamic in levelsLoading)
 		ULevelStreamingDynamic* level = levelsLoading[i];
 		if (! level->IsLevelLoaded()) {
 			levelsLoaded = false;
 		}
 	}
 
-	if (levelsLoaded) {
-		AllLevelsLoaded();
-	}
+	// Made blueprint pure, so we don't want to make changes in this function
+	// if (levelsLoaded) {AllLevelsLoaded();}
 
-	return;
+	return levelsLoaded;
 }
-*/
-//void ADungeonSpawner::AllLevelsLoaded() {}
 
 float ADungeonSpawner::PercentLevelsLoaded() {
 	int numOfLevels = levelsLoading.Num();
@@ -227,7 +222,7 @@ float ADungeonSpawner::PercentLevelsLoaded() {
 	if (numOfLevels != 0) {
 		percent = (float)numLoaded / (float)numOfLevels;
 	}
-		UE_LOG(LogTemp, Warning, TEXT("Num Levels: %i | Num Loaded: %i | Percent Loaded: %f"), numOfLevels, numLoaded, percent)
+		UE_LOG(LogTemp, Log, TEXT("Num Levels: %i | Num Loaded: %i | Percent Loaded: %f"), numOfLevels, numLoaded, percent)
 
 	return percent;
 }

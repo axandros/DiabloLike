@@ -43,8 +43,8 @@ public:
 	// These two should be BlueprintNativeEvent, but that won't compile.
 	UFUNCTION(BlueprintImplementableEvent)
 		void SpawnTile(FGenericTile tile, int gridX, int gridY);
-	UFUNCTION(BlueprintImplementableEvent)
-		void AreAllLevelsLoaded();
+	UFUNCTION(BlueprintPure, Category = "Spawner")
+		bool AreAllLevelsLoaded();
 
 	UFUNCTION(BlueprintCallable, Category = "Spawner")
 		void SurroundWithEmpty();
